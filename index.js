@@ -25,18 +25,20 @@ function deletePost(posts) {
   });
 }
 
-const post1 = createPost("Post 1");
-const post2 = createPost("post 2");
+async function main() {
+  try {
+    const post1 = await createPost("Post 1");
+    const post2 = await createPost("Post 2");
+    const lastTime = await updateLastUserActivityTime();
 
-const lastTime = updateLastUserActivityTime();
+    console.log(`post 1: ${post1.title} created at: ${lastTime}`);
+    console.log(`post 2: ${post2.title} created at: ${lastTime}`);
 
-const obj = Promise.all([post1, post2, lastTime]);
-obj.then((result) => {
-  const [post1, post2, lastTime] = result;
-  console.log(`post 1: ${post1.title} created at: ${lastTime}`);
-  console.log(`post 2: ${post2.title} created at: ${lastTime}`);
-  const updatedPost = deletePost([post1, post2]);
-  updatedPost.then((res) => {
-    console.log(res);
-  });
-});
+    const updatedPost = await deletePost([post1, post2]);
+    console.log(updatedPost);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+main();
